@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Mengimpor Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Login</title>
+  </head>
+  <body class="font-[Montserrat] bg-slate-200">
+    <section>
+      <div
+        class="px-2 py-4 w-full flex justify-center items-center min-h-screen"
+      >
+        <form
+          method="post"
+          class="flex flex-col w-[20%] gap-2 py-4 px-3 justify-center shadow-xl bg-slate-300 rounded-xl"
+        >
+          <label for="username" class="font-semibold text-lg">Username</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            placeholder="username"
+            required
+            class="border rounded-lg px-2 py-2"
+          />
+          <label for="password" class="font-semibold text-lg">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            id="password"
+            required
+            class="border rounded-lg px-2 py-2"
+          />
+          <div class="text-white">
+            <button
+              class="bg-slate-500 w-full rounded-lg hover:bg-slate-500/60 transition duration-300 py-2"
+              type="submit"
+            >
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>
