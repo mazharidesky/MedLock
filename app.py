@@ -68,21 +68,28 @@ def login():
         cur.close()
         
         if user:
-            encrypted_password = user[3]
+            stored_password = user[3]
+            is_password_match = False
+            
+            # Cek apakah password terenkripsi atau tidak
             try:
-                decrypted_password = decrypt_password(encrypted_password)
-                if decrypted_password == _password:
-                    session['logged_in'] = True
-                    session['username'] = _username
-                    session['role'] = user[4]  # Assuming role is the 5th column
-                    if user[4] == 'admin':
-                        return redirect(url_for('admin_dashboard'))
-                    else:
-                        return redirect(url_for('home'))
-                else:
-                    flash('Invalid username or password', 'error')
+                decrypted_password = decrypt_password(stored_password)
+                is_password_match = (decrypted_password == _password)
             except:
-                flash('An error occurred during login', 'error')
+                # Jika dekripsi gagal, asumsikan password disimpan dalam plain text
+                is_password_match = (stored_password == _password)
+            
+            if is_password_match:
+                session['logged_in'] = True
+                session['username'] = _username
+                session['role'] = user[4]  # Assuming role is the 5th column
+                print(f"Logged in as: {session['username']}, Role: {session['role']}")  # Debugging line
+                if user[4] == 'admin':
+                    return redirect(url_for('admin_page'))
+                else:
+                    return redirect(url_for('home'))
+            else:
+                flash('Invalid username or password', 'error')
         else:
             flash('Invalid username or password', 'error')
         
@@ -120,8 +127,8 @@ def home():
 @app.route('/admin')
 @login_required
 @admin_required
-def admin_dashboard():
-    return render_template('admin_dashboard.html')
+def admin_page():
+    return render_template('admin.html')
 
 @app.route('/logout')
 def logout():
@@ -138,13 +145,20 @@ def encrypt_admin_password():
     cur.execute("SELECT * FROM users WHERE role = 'admin'")
     admin = cur.fetchone()
     
-    if admin and not admin[3].startswith('b'):  # Check if password is not already encrypted
-        encrypted_password = encrypt_password(admin[3])
-        cur.execute("UPDATE users SET password = %s WHERE id = %s", (encrypted_password, admin[0]))
-        mysql.connection.commit()
-        print("Admin password encrypted successfully.")
+    if admin:
+        stored_password = admin[3]
+        try:
+            # Coba dekripsi untuk memeriksa apakah sudah terenkripsi
+            decrypt_password(stored_password)
+            print("Admin password is already encrypted.")
+        except:
+            # Jika gagal dekripsi, asumsikan belum terenkripsi dan lakukan enkripsi
+            encrypted_password = encrypt_password(stored_password)
+            cur.execute("UPDATE users SET password = %s WHERE id = %s", (encrypted_password, admin[0]))
+            mysql.connection.commit()
+            print("Admin password encrypted successfully.")
     else:
-        print("Admin password is already encrypted or admin not found.")
+        print("Admin not found.")
     
     cur.close()
 
