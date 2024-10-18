@@ -12,11 +12,123 @@
     />
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Sign in</title>
+    <title>Data Pasien</title>
   </head>
   <body class="font-[Montserrat] bg-slate-200">
-    <div>
-      <h1>halaman admin</h1>
-    </div>
+    <nav class="flex sticky top-0 bg-slate-300 py-6">
+      <div
+        class="flex w-full mx-auto max-w-[84rem] justify-between items-center"
+      >
+        <h1 class="text-2xl font-extrabold">Data Pasien</h1>
+        <ul class="flex gap-6">
+          <li>
+            <a
+              href="/admin"
+              class="text-white hover:font-bold hover:bg-slate-200 hover:px-2 py-2 hover:text-black transition-colors duration-300 hover:rounded-lg"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="/logout"
+              class="text-white hover:font-bold hover:bg-slate-200 hover:px-2 py-2 hover:text-black transition-colors duration-300 hover:rounded-lg"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main>
+      <section class="">
+        <div
+          class="flex flex-col gap-6 justify-center items-center w-full min-h-screen"
+        >
+          <h1 class="text-3xl font-extrabold">Form Data Pasien</h1>
+          <form
+            action="/submit"
+            method="POST"
+            class="flex flex-col w-[50%] py-4 px-3 justify-center shadow-xl bg-slate-300 rounded-xl"
+          >
+            <label for="nama">Nama</label>
+            <input
+              class="px-2 py-2 rounded-lg"
+              type="text"
+              id="nama"
+              name="nama"
+              required
+            /><br />
+            <label for="password">Password</label>
+            <input
+              class="px-2 py-2 rounded-lg"
+              type="text"
+              id="password"
+              name="password"
+              required
+            /><br />
+
+            <label for="handphone">No Handphone</label>
+            <input
+              class="px-2 py-2 rounded-lg"
+              type="text"
+              id="handphone"
+              name="handphone"
+              required
+            /><br />
+
+            <label for="tanggal_lahir">Tanggal Lahir</label>
+            <input
+              class="px-2 py-2 rounded-lg"
+              type="date"
+              id="tanggal_lahir"
+              name="tanggal_lahir"
+              required
+            /><br />
+
+            <label for="jenis_kelamin">Jenis Kelamin</label>
+            <select
+              id="jenis_kelamin"
+              name="jenis_kelamin"
+              class="rounded-lg px-2 py-2"
+            >
+              <option value="pria">Pria</option>
+              <option value="wanita">Wanita</option></select
+            ><br />
+
+            <label for="alamat">Alamat</label>
+            <input
+              class="px-2 py-2 rounded-lg"
+              type="text"
+              id="alamat"
+              name="alamat"
+              required
+            /><br />
+
+            <label for="riwayat_penyakit">Riwayat Penyakit</label>
+            <textarea
+              id="riwayat_penyakit"
+              name="riwayat_penyakit"
+              class="rounded-lg"
+            ></textarea
+            ><br />
+
+            <label for="kontak_darurat">Kontak Darurat</label>
+            <input
+              class="px-2 py-2 rounded-lg"
+              type="text"
+              id="kontak_darurat"
+              name="kontak_darurat"
+              required
+            /><br />
+
+            <button
+              type="submit"
+              class="bg-slate-200 px-4 py-3 rounded-lg font-semibold hover:bg-slate-200/60 transition duration-300"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

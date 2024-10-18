@@ -124,7 +124,7 @@ def register():
 def home():
     return render_template('home.html')
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_page():
