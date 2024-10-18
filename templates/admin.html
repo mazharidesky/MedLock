@@ -45,16 +45,16 @@
         >
           <h1 class="text-3xl font-extrabold">Form Data Pasien</h1>
           <form
-            action="/submit"
+            action="/admin"
             method="POST"
             class="flex flex-col w-[50%] py-4 px-3 justify-center shadow-xl bg-slate-300 rounded-xl"
           >
-            <label for="nama">Nama</label>
+            <label for="username">Nama</label>
             <input
               class="px-2 py-2 rounded-lg"
               type="text"
-              id="nama"
-              name="nama"
+              id="username"
+              name="username"
               required
             /><br />
             <label for="email">Email</label>
@@ -65,21 +65,20 @@
               name="email"
               required
             /><br />
-            <label for="password">Password</label>
-            <input
-              class="px-2 py-2 rounded-lg"
-              type="text"
-              id="password"
-              name="password"
-              required
-            /><br />
-
             <label for="handphone">No Handphone</label>
             <input
               class="px-2 py-2 rounded-lg"
               type="text"
               id="handphone"
               name="handphone"
+              required
+            /><br />
+            <label for="password">Password</label>
+            <input
+              class="px-2 py-2 rounded-lg"
+              type="text"
+              id="password"
+              name="password"
               required
             /><br />
 

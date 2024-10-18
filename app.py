@@ -39,7 +39,7 @@ def generate_pdf(data):
     width, height = letter
 
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 50, "Admin Form Submission")
+    p.drawString(50, height - 50, "Form Rekam Medis Anda Dekku")
     
     p.setFont("Helvetica", 12)
     y = height - 80
@@ -98,7 +98,7 @@ def login():
         cur.close()
         
         if user:
-            stored_password = user[3]
+            stored_password = user[4]
             is_password_match = False
             
             # Cek apakah password terenkripsi atau tidak
@@ -112,9 +112,9 @@ def login():
             if is_password_match:
                 session['logged_in'] = True
                 session['username'] = _username
-                session['role'] = user[4]  # Assuming role is the 5th column
+                session['role'] = user[5]  # Assuming role is the 5th column
                 print(f"Logged in as: {session['username']}, Role: {session['role']}")  # Debugging line
-                if user[4] == 'admin':
+                if user[5] == 'admin':
                     return redirect(url_for('admin_page'))
                 else:
                     return redirect(url_for('home'))
@@ -160,11 +160,17 @@ def home():
 def admin_page():
     if request.method == 'POST':
         form_data = {
-            'username': request.form['username'],
-            'email': request.form['email'],
-            'password': request.form['password'],
-            'role': request.form['role']
+            'Nama': request.form['username'],
+            'Email': request.form['email'],
+            'No Handphone': request.form['handphone'],
+            'Password': request.form['password'],
+            'Tanggal lahir': request.form['tanggal_lahir'],
+            'Jenis Kelamin': request.form['jenis_kelamin'],
+            'Alamat': request.form['alamat'],
+            'Riwayat Penyakit': request.form['riwayat_penyakit']
         }
+        
+        default_role = 'user'
         
         # Encrypt form data
         encrypted_data = encrypt_data(form_data)
@@ -177,17 +183,20 @@ def admin_page():
         pdf_buffer = generate_pdf(form_data)
         
         # Save user to database (as before)
-        encrypted_password = encrypt_password(form_data['password'])
+        encrypted_password = encrypt_password(form_data['Password'])
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)", 
-                    (form_data['username'], form_data['email'], encrypted_password, form_data['role']))
+        cur.execute("INSERT INTO users (name, email, handphone, password, role) VALUES (%s, %s, %s, %s, %s)", 
+                    (form_data['Nama'],form_data['No Handphone'], form_data['Email'], encrypted_password, default_role))
         mysql.connection.commit()
         cur.close()
         
         flash('User added successfully and form data encrypted.', 'success')
         
+        pdf_filename = f"Rekam_Medis_{form_data['Nama'].replace(' ', '_')}.pdf"
+        
         # Return PDF file
-        return send_file(pdf_buffer, as_attachment=True, download_name='admin_submission.pdf', mimetype='application/pdf')
+        return send_file(pdf_buffer, as_attachment=True, download_name=pdf_filename, mimetype='application/pdf')
+    
     
     return render_template('admin.html')
 
