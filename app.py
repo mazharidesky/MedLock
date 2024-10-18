@@ -2,6 +2,11 @@ import os
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_mysqldb import MySQL
 from functools import wraps
+from flask import send_file
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
+import json
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
@@ -21,6 +26,31 @@ app.config['MYSQL_PORT'] = 3306
 AES_KEY = b'ThisIs16ByteKey!'  # Kunci harus tepat 16 byte
 
 mysql = MySQL(app)
+
+def encrypt_data(data):
+    iv = get_random_bytes(16)
+    cipher = AES.new(AES_KEY, AES.MODE_CBC, iv)
+    encrypted_bytes = cipher.encrypt(pad(json.dumps(data).encode('utf-8'), AES.block_size))
+    return base64.b64encode(iv + encrypted_bytes).decode('utf-8')
+
+def generate_pdf(data):
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, height - 50, "Admin Form Submission")
+    
+    p.setFont("Helvetica", 12)
+    y = height - 80
+    for key, value in data.items():
+        p.drawString(50, y, f"{key}: {value}")
+        y -= 20
+
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return buffer
 
 def encrypt_password(password):
     iv = get_random_bytes(16)
@@ -128,6 +158,37 @@ def home():
 @login_required
 @admin_required
 def admin_page():
+    if request.method == 'POST':
+        form_data = {
+            'username': request.form['username'],
+            'email': request.form['email'],
+            'password': request.form['password'],
+            'role': request.form['role']
+        }
+        
+        # Encrypt form data
+        encrypted_data = encrypt_data(form_data)
+        
+        # Save encrypted data to file
+        with open('encrypted_form_data.txt', 'w') as f:
+            f.write(encrypted_data)
+        
+        # Generate PDF
+        pdf_buffer = generate_pdf(form_data)
+        
+        # Save user to database (as before)
+        encrypted_password = encrypt_password(form_data['password'])
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)", 
+                    (form_data['username'], form_data['email'], encrypted_password, form_data['role']))
+        mysql.connection.commit()
+        cur.close()
+        
+        flash('User added successfully and form data encrypted.', 'success')
+        
+        # Return PDF file
+        return send_file(pdf_buffer, as_attachment=True, download_name='admin_submission.pdf', mimetype='application/pdf')
+    
     return render_template('admin.html')
 
 @app.route('/logout')
