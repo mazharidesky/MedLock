@@ -12,6 +12,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import base64
+import re
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
@@ -96,6 +97,20 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def format_indonesian_phone(phone):
+    # Hapus semua karakter non-digit
+    phone = re.sub(r'\D', '', phone)
+    
+    # Jika nomor dimulai dengan '0', ganti dengan kode negara Indonesia '62'
+    if phone.startswith('0'):
+        phone = '62' + phone[1:]
+    
+    # Jika nomor belum memiliki kode negara, tambahkan '62'
+    elif not phone.startswith('62'):
+        phone = '62' + phone
+    
+    return phone
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -176,7 +191,7 @@ def admin_page():
         form_data = {
             'Nama': request.form['username'],
             'Email': request.form['email'],
-            'No Handphone': request.form['handphone'],
+            'No Handphone': format_indonesian_phone(request.form['handphone']),
             'Password': request.form['password'],
             'Tanggal lahir': request.form['tanggal_lahir'],
             'Jenis Kelamin': request.form['jenis_kelamin'],
