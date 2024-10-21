@@ -3,14 +3,14 @@ from flask import Flask, render_template, request, redirect, session, url_for, f
 from flask_mysqldb import MySQL
 from functools import wraps
 from flask import send_file
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter # type: ignore
+from reportlab.pdfgen import canvas # type: ignore
 from io import BytesIO
 import json
 import urllib.parse
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-from Crypto.Random import get_random_bytes
+from Crypto.Cipher import AES # type: ignore
+from Crypto.Util.Padding import pad, unpad # type: ignore
+from Crypto.Random import get_random_bytes # type: ignore
 import base64
 import re
 
@@ -41,7 +41,7 @@ def generate_pdf(data):
     width, height = letter
 
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 50, "Form Rekam Medis Anda Dekku")
+    p.drawString(50, height - 50, "Form Rekam Medis Anda")
     
     p.setFont("Helvetica", 12)
     y = height - 80
