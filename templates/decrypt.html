@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Mengimpor Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Dekripsi File</title>
+  </head>
+  <body class="font-[Montserrat] bg-slate-200">
+    <main>
+      <div
+        class="flex flex-col justify-center items-center w-full min-h-screen gap-8"
+      >
+        <h1 class="font-extrabold text-3xl">Decrypt Data Kamu</h1>
+        <form method="POST" enctype="multipart/form-data">
+          <input type="file" name="file" accept=".txt" />
+          <!-- <input type="submit" value="Decrypt and Download PDF" class="" /> -->
+          <button
+            type="submit"
+            value="Decrypt and Download PDF"
+            class="bg-slate-500 text-white px-4 py-2 rounded-lg hover:bg-slate-500/60 transition duration-300"
+          >
+            Decrypt and Download PDF
+          </button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

@@ -7,6 +7,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from io import BytesIO
 import json
+import urllib.parse
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
@@ -51,6 +52,19 @@ def generate_pdf(data):
     p.save()
     buffer.seek(0)
     return buffer
+
+def encrypt_data(data):
+    iv = get_random_bytes(16)
+    cipher = AES.new(AES_KEY, AES.MODE_CBC, iv)
+    encrypted_bytes = cipher.encrypt(pad(json.dumps(data).encode('utf-8'), AES.block_size))
+    return base64.b64encode(iv + encrypted_bytes).decode('utf-8')
+
+def decrypt_data(encrypted_data):
+    encrypted_bytes = base64.b64decode(encrypted_data)
+    iv = encrypted_bytes[:16]
+    cipher = AES.new(AES_KEY, AES.MODE_CBC, iv)
+    decrypted_bytes = unpad(cipher.decrypt(encrypted_bytes[16:]), AES.block_size)
+    return decrypted_bytes.decode('utf-8')
 
 def encrypt_password(password):
     iv = get_random_bytes(16)
@@ -117,7 +131,7 @@ def login():
                 if user[5] == 'admin':
                     return redirect(url_for('admin_page'))
                 else:
-                    return redirect(url_for('home'))
+                    return redirect(url_for('decrypt_page'))
             else:
                 flash('Invalid username or password', 'error')
         else:
@@ -175,28 +189,38 @@ def admin_page():
         # Encrypt form data
         encrypted_data = encrypt_data(form_data)
         
-        # Save encrypted data to file
-        with open('encrypted_form_data.txt', 'w') as f:
-            f.write(encrypted_data)
-        
-        # Generate PDF
-        pdf_buffer = generate_pdf(form_data)
-        
-        # Save user to database (as before)
+        # Save user to database
         encrypted_password = encrypt_password(form_data['Password'])
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO users (name, email, handphone, password, role) VALUES (%s, %s, %s, %s, %s)", 
-                    (form_data['Nama'],form_data['No Handphone'], form_data['Email'], encrypted_password, default_role))
+                    (form_data['Nama'], form_data['Email'], form_data['No Handphone'], encrypted_password, default_role))
         mysql.connection.commit()
         cur.close()
         
         flash('User added successfully and form data encrypted.', 'success')
         
-        pdf_filename = f"Rekam_Medis_{form_data['Nama'].replace(' ', '_')}.pdf"
+        # Prepare encrypted data for download as .txt file
+        encrypted_buffer = BytesIO(encrypted_data.encode('utf-8'))
+        encrypted_filename = f"Encrypted_Rekam_Medis_{form_data['Nama'].replace(' ', '_')}.txt"
         
-        # Return PDF file
-        return send_file(pdf_buffer, as_attachment=True, download_name=pdf_filename, mimetype='application/pdf')
-    
+        # Prepare WhatsApp message
+        whatsapp_message = f"Halo {form_data['Nama']}, ini adalah pesan otomatis dari sistem rekam medis kami. Berikut adalah informasi login Anda:\n\nUsername: {form_data['Nama']}\nPassword: {form_data['Password']}\n\nSilakan jaga kerahasiaan informasi ini. Terima kasih!"
+        
+        # Prepare WhatsApp URL
+        whatsapp_url = f"https://wa.me/{form_data['No Handphone']}?text={urllib.parse.quote(whatsapp_message)}"
+        
+        # Send file and redirect to WhatsApp
+        response = send_file(
+            encrypted_buffer,
+            as_attachment=True,
+            download_name=encrypted_filename,
+            mimetype='text/plain'
+        )
+        
+        # Set a custom header to trigger JavaScript redirect
+        response.headers['X-Redirect-WhatsApp'] = whatsapp_url
+        
+        return response
     
     return render_template('admin.html')
 
@@ -208,6 +232,39 @@ def logout():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+@app.route('/decrypt', methods=['GET', 'POST'])
+@login_required
+def decrypt_page():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part', 'error')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file', 'error')
+            return redirect(request.url)
+        if file:
+            try:
+                # Read and decrypt the file content
+                encrypted_content = file.read().decode('utf-8')
+                decrypted_data = decrypt_data(encrypted_content)
+                
+                # Generate PDF from decrypted data
+                pdf_buffer = generate_pdf(json.loads(decrypted_data))
+                
+                # Return the PDF file
+                return send_file(
+                    pdf_buffer,
+                    as_attachment=True,
+                    download_name="Decrypted_Rekam_Medis.pdf",
+                    mimetype='application/pdf'
+                )
+            except Exception as e:
+                flash(f'Error decrypting file: {str(e)}', 'error')
+                return redirect(request.url)
+    
+    return render_template('decrypt.html')
 
 # Function to encrypt existing admin password
 def encrypt_admin_password():

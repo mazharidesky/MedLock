@@ -45,6 +45,7 @@
         >
           <h1 class="text-3xl font-extrabold">Form Data Pasien</h1>
           <form
+            id="pasien-form"
             action="/admin"
             method="POST"
             class="flex flex-col w-[50%] py-4 px-3 justify-center shadow-xl bg-slate-300 rounded-xl"
@@ -137,5 +138,53 @@
         </div>
       </section>
     </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById("pasien-form");
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var formData = new FormData(form);
+
+          fetch("/admin", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              var whatsappUrl = response.headers.get("X-Redirect-WhatsApp");
+              if (whatsappUrl) {
+                // Trigger file download
+                return response.blob().then((blob) => {
+                  var url = window.URL.createObjectURL(blob);
+                  var a = document.createElement("a");
+                  a.href = url;
+                  a.download = response.headers
+                    .get("Content-Disposition")
+                    .split("filename=")[1]
+                    .replace(/"/g, "");
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  return whatsappUrl;
+                });
+              }
+            })
+            .then((whatsappUrl) => {
+              if (whatsappUrl) {
+                // Redirect to WhatsApp after a short delay
+                setTimeout(function () {
+                  window.location.href = whatsappUrl;
+                }, 1000);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("An error occurred. Please try again.");
+            });
+        });
+      });
+    </script>
   </body>
 </html>
