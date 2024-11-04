@@ -15,23 +15,56 @@
     <title>aes-128</title>
   </head>
   <body class="font-[Montserrat] bg-slate-200">
-    <section class="flex justify-center items-center min-h-screen">
-      <div class="flex gap-5">
-        <a href="{{ url_for('login') }}"
-          ><button
-            class="bg-slate-500 py-4 px-3 rounded-lg text-white hover:bg-slate-500/60 transition duration-300"
-          >
-            Login Admin
-          </button></a
-        >
-        <a href="{{ url_for('decrypt_page') }}"
-          ><button
-            class="bg-slate-500 py-4 px-3 rounded-lg text-white hover:bg-slate-500/60 transition duration-300"
-          >
-            Dekripsi Data Anda
-          </button></a
-        >
+    <nav class="bg-slate-800 p-8 shadow-lg">
+      <div class="container mx-auto">
+        <div class="flex justify-between items-center">
+          <!-- Logo atau Nama Website -->
+          <div class="text-white font-bold text-2xl">
+            <a href="/" class="hover:text-slate-300 transition duration-300">
+              Medical Lock
+            </a>
+          </div>
+    
+          <!-- Menu Navigasi -->
+            <div class="flex gap-4">
+              <a href="{{ url_for('login') }}">
+                <button class=" px-4 py-2 rounded-lg text-white hover:bg-slate-500/60 transition duration-300">
+                  Login Admin
+                </button>
+              </a>
+              <a href="{{ url_for('decrypt_page') }}">
+                <button class=" px-4 py-2 rounded-lg text-white hover:bg-slate-500/60 transition duration-300">
+                  Dekripsi Data
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+    </nav>
+    <main class="py-8">
+    <article class="container mx-auto flex flex-col gap-8">
+      <img src="../static/images/document-paper.jpg" alt="Paper Doctor" class="w-full rounded-xl h-[40rem] object-cover">
+      <div class="space-y-4">
+        <p>Lhokseumawe, 8 Oktober 2024</p>
+      <h1 class="font-bold text-3xl">
+        Pentingnya Kerahasiaan Data Pasien
+      </h1>
+      <p class="text-justify text-lg">
+        Kerahasiaan rekam medis adalah pondasi utama dalam membangun kepercayaan antara institusi kesehatan dan pasien. Setiap detail informasi kesehatan yang tercatat merupakan cerminan perjalanan hidup seseorang, menyimpan kisah-kisah pribadi yang memerlukan perlindungan maksimal. Ketika seseorang memercayakan informasi kesehatannya kepada kami, mereka tidak hanya membagikan data, tetapi juga menitipkan harapan, kekhawatiran, dan masa depan mereka.</br></br>
+        Dalam era digital yang semakin terhubung, melindungi kerahasiaan rekam medis menjadi tantangan sekaligus kewajiban yang tak tergantikan. Setiap data yang terekam - mulai dari riwayat penyakit, hasil pemeriksaan, hingga catatan pengobatan - adalah bagian dari privasi yang harus dijaga dengan standar keamanan tertinggi. Kebocoran informasi medis tidak hanya dapat mengakibatkan pelanggaran hukum, tetapi juga dapat berdampak serius pada kehidupan sosial, karier, dan kesejahteraan mental pasien.
+        Kami memahami bahwa setiap rekam medis menyimpan cerita yang unik, perjalanan kesehatan yang personal, dan informasi sensitif yang dapat mempengaruhi berbagai aspek kehidupan seseorang. Itulah mengapa kami berkomitmen untuk mengimplementasikan sistem keamanan berlapis, protokol privasi yang ketat, dan standar etika profesional yang tak tergoyahkan dalam mengelola setiap dokumen rekam medis.</br></br>
+        Melindungi kerahasiaan rekam medis bukan sekadar tentang mengamankan data - ini adalah tentang menghormati martabat manusia, menjaga kepercayaan yang diberikan, dan memastikan setiap pasien dapat mencari pertolongan medis tanpa kekhawatiran akan kebocoran informasi pribadi mereka. Setiap langkah yang kami ambil dalam mengamankan data adalah cerminan dari komitmen kami terhadap kesehatan dan kesejahteraan pasien secara menyeluruh.</br></br>
+        Di tengah pesatnya perkembangan teknologi dan semakin kompleksnya tantangan keamanan data, kami terus meningkatkan dan memperbarui sistem perlindungan kami. Kerahasiaan rekam medis bukan hanya tentang mematuhi regulasi - ini adalah tentang menjaga kepercayaan, melindungi hak asasi, dan memastikan setiap individu dapat menjalani perawatan kesehatan dengan rasa aman dan nyaman.</br></br>
+        Kepercayaan Anda adalah amanah bagi kami. Setiap rekam medis yang kami simpan adalah jejak kepercayaan yang akan kami jaga dengan segenap kemampuan dan dedikasi. Karena kami percaya bahwa kesehatan yang baik dimulai dari rasa aman dan kepercayaan yang terjaga.
+      </p>
+    </div>
+    </article>
+  </main>
+  <footer class="bg-slate-800 py-8">
+    <div class="container mx-auto py-4 text-center text-white">
+      <p>&copy; 2024 Medical Lock. All rights reserved.</p>
+    </div>
+  </footer>
   </body>
 </html>

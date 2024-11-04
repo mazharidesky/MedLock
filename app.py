@@ -98,14 +98,12 @@ def admin_required(f):
     return decorated_function
 
 def format_indonesian_phone(phone):
-    # Hapus semua karakter non-digit
+
     phone = re.sub(r'\D', '', phone)
     
-    # Jika nomor dimulai dengan '0', ganti dengan kode negara Indonesia '62'
     if phone.startswith('0'):
         phone = '62' + phone[1:]
     
-    # Jika nomor belum memiliki kode negara, tambahkan '62'
     elif not phone.startswith('62'):
         phone = '62' + phone
     
@@ -156,27 +154,27 @@ def login():
     
     return render_template('login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        _username = request.form['username']
-        _email = request.form['email']
-        _password = request.form['password']
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         _username = request.form['username']
+#         _email = request.form['email']
+#         _password = request.form['password']
         
-        encrypted_password = encrypt_password(_password)
+#         encrypted_password = encrypt_password(_password)
         
-        default_role = 'user'
+#         default_role = 'user'
         
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)", 
-                    (_username, _email, encrypted_password, default_role))
-        mysql.connection.commit()
-        cur.close()
+#         cur = mysql.connection.cursor()
+#         cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)", 
+#                     (_username, _email, encrypted_password, default_role))
+#         mysql.connection.commit()
+#         cur.close()
         
-        flash('Registration successful. Please login.', 'success')
-        return redirect(url_for('login'))
+#         flash('Registration successful. Please login.', 'success')
+#         return redirect(url_for('login'))
     
-    return render_template('register.html')
+#     return render_template('register.html')
 
 @app.route('/home')
 @login_required
