@@ -15,34 +15,32 @@
     <title>Data Pasien</title>
   </head>
   <body class="font-[Montserrat] bg-slate-200">
-    <nav class="flex sticky top-0 bg-slate-300 py-6">
+    <nav class="bg-slate-800 flex sticky top-0 bg-slate-300 py-6">
       <div
         class="flex w-full mx-auto max-w-[84rem] justify-between items-center"
       >
-        <h1 class="text-2xl font-extrabold">Data Pasien</h1>
+        <h1 class="text-2xl font-extrabold text-white">Medical Lock</h1>
         <ul class="flex gap-6">
           <li>
             <a
               href="/admin"
-              class="text-black hover:font-semibold transition-tansform duration-300"
+              class="text-white hover:font-semibold transition-tansform duration-300"
               >Home</a
             >
           </li>
           <li>
             <a
               href="/logout"
-              class="text-black hover:font-semibold transition-tansform duration-300"
+              class="text-white hover:font-semibold transition-tansform duration-300"
               >Logout</a
             >
           </li>
         </ul>
       </div>
     </nav>
-    <main>
-      <section class="">
-        <div
-          class="flex flex-col gap-6 justify-center items-center w-full min-h-screen"
-        >
+    <main class="container mx-auto">
+      <section class="w-full py-8">
+        <div class="flex flex-col gap-6 justify-center items-center">
           <h1 class="text-3xl font-extrabold">Form Data Pasien</h1>
           <form
             id="pasien-form"
@@ -138,6 +136,11 @@
         </div>
       </section>
     </main>
+    <footer class="bg-slate-800 py-8">
+      <div class="container mx-auto py-4 text-center text-white">
+        <p>&copy; 2024 Medical Lock. All rights reserved.</p>
+      </div>
+    </footer>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         var form = document.getElementById("pasien-form");
